@@ -1,7 +1,8 @@
 packages = c(
     'bs4Dash',
     'tidyverse',
-    'here'
+    'here',
+    'rsconnect'
 )
 
 for(p in packages){

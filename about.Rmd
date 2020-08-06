@@ -1,0 +1,12 @@
+---
+title: "About"
+output: html_notebook
+---
+
+# About
+
+# Team Members
+- Jonathan LEONG Zhi Jian
+- KIM Joon Hyung
+- Ryan TAN Yi Hon
+- TEO Wei Shen
