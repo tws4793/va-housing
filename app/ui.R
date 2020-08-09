@@ -5,17 +5,25 @@
 
 # Index
 tb_index = menuItem(
-  'Home',
+  'Dashboard',
   tabName = 'index',
   icon = 'home'
 )
 pg_index = tabItem(
   tabName = 'index',
   fluidRow(
-    h1('Housing Prices & GDP Overview')
+    valueBoxOutput('vbox_gdp_pc'),
+    valueBoxOutput('vbox_gdp'),
+    valueBoxOutput('vbox_hp')
   ),
   fluidRow(
-    plotlyOutput('plt_gdp')
+    box(
+      plotlyOutput('plt_gdp'),
+      collapsible = FALSE,
+      closable = FALSE,
+      width = 12
+    )
+    #TODO: Area shading
   )
 )
 
@@ -32,21 +40,68 @@ pg_about = tabItem(
 
 # Map
 tb_map = menuItem(
-  'Map',
+  'Housing Prices',
   tabName = 'map',
   icon = 'map'
 )
 pg_map = tabItem(
   tabName = 'map',
   fluidRow(
-    h1('Map')
-  ),
-  fluidRow(
-    leafletOutput('map_sg')
-  ),
-  fluidRow(
-    
+    box(
+      fluidRow(
+        column(
+          10,
+          leafletOutput('map_sg')
+        ),
+        column(
+          2,
+          sliderInput(
+            inputId = 'slider1',
+            label = 'Year',
+            min = 2013,
+            max = 2019,
+            value = 2019
+          ),
+          selectInput(
+            inputId = 'select1',
+            label = 'Type',
+            choices = c('1 ROOM', '2 ROOM')
+          )
+        )
+      ),
+      fluidRow(
+        'DT'
+      ),
+      collapsible = TRUE,
+      closable = FALSE,
+      width = 12,
+      height = '100%'
+    )
   )
+)
+
+# Regression
+tb_regression = menuItem(
+  'Regression',
+  tabName = 'regression',
+  icon = 'chart-line'
+)
+pg_regression = tabItem(
+  tabName = 'regression',
+  fluidRow(
+    h1('Prediction')
+  )
+)
+
+# Help
+tb_help = menuItem(
+  'Help',
+  tabName = 'help',
+  icon = 'question'
+)
+pg_help = tabItem(
+  tabName = 'help',
+  includeMarkdown('notebook/help.Rmd')
 )
 
 ### SETTINGS
@@ -68,6 +123,8 @@ sidebar = dashboardSidebar(
   sidebarMenu(
     tb_index,
     tb_map,
+    tb_regression,
+    tb_help,
     tb_about
   )
 )
@@ -118,8 +175,10 @@ footer = dashboardFooter(
 body = dashboardBody(
   tabItems(
     pg_index,
+    pg_map,
+    pg_regression,
     pg_about,
-    pg_map
+    pg_help
   )
 )
 

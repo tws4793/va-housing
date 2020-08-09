@@ -64,28 +64,44 @@ head(singapore_gdp2)
 
 ```{r}
 
+y1_max = max(singapore_gdp2$GDP_per_capita)
+y2_max = max(singapore_gdp2$HDB_Resale_Price)
+
 ay1 <- list(
   tickfont = list(color = "blue"),
-  title = "GDP_per_capita"
+  title = "GDP per Capita",
+  tick0 = 0,
+  range = c(0, y1_max+3811.221),
+  dtick = (y1_max+3811.221)/5,
+  autotick=FALSE,
+  color = "blue"
 )
 
 ay2 <- list(
-  tickfont = list(color = "orange"),
+  tickfont = list(color = "red"),
   overlaying = "y",
   side = "right",
-  title = "Housing_Price"
+  title = "HDB Price",
+  range = c(0,y2_max+23559),
+  dtick = (y2_max+23559)/5,
+  tick0 = 0,
+  autotick=FALSE,
+  color = "red",
+  gridcolor = "lightgrey"
 )
 
 
 fig <- plot_ly() %>%
-  add_lines(x = ~singapore_gdp2$Year, y = ~singapore_gdp2$GDP_per_capita, name = "GDP_per_capita") %>%
-  add_lines(x = ~singapore_gdp2$Year, y = ~singapore_gdp2$HDB_Resale_Price, name = "HDB_Resale_Price", yaxis = "y2") %>%
+  add_trace(x = ~singapore_gdp2$Year, y = ~singapore_gdp2$GDP_per_capita, name = "GDP per Capita",mode = 'lines+markers') %>%
+  add_trace(x = ~singapore_gdp2$Year, y = ~singapore_gdp2$HDB_Resale_Price, name = "HDB Price", yaxis = "y2",line=list(color="red", width=2),marker = list(color="red", width=2),mode = 'lines+markers') %>%
   layout(
     yaxis2 = ay2,
     yaxis = ay1,
-    xaxis = list(title="Year"),
-    title = "Singapore_Economy & Housing Price"
-  )
-
+    xaxis = list(title="Year",color="black",linecolor="lightgrey",showgrid = F,ticks = "outside",tickcolor = "lightgrey"),
+    title = "Singapore Economy & HDB Resale Price",
+    hovermode = "x unified")
+fig <- fig %>% layout(legend = list(x = 100, y = 0.95))
 fig
 ```
+
+

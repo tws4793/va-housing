@@ -29,11 +29,11 @@ settings = list(
 # Data
 
 dir_data = list(
-  'gdp' = here('data/output/gdp_sg.csv'),
+  'gdp' = here('data/output/gdp_sg.csv'), # SGP_GDP2.csv
   'hdb_resale' = here('data/output/hdb_resale.csv'),
-  'mrt' = here('data/mrt_with_location.csv')
+  'mrt' = here('data/output/mrt_with_location.csv')
 )
-dir_icon_mrt = here('app/www/AWT-Train.png')
+dir_icon_mrt = here('www/AWT-Train.png')
 
 data_gdp = read_csv(dir_data$gdp)
 data_hdb_resale = read_csv(dir_data$hdb_resale)

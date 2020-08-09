@@ -14,6 +14,33 @@ server = function(input, output){
   )
   
   # GDP
+  output$vbox_gdp_pc = renderbs4ValueBox({
+    valueBox(
+      value = 25,
+      subtitle = 'GDP per Capita',
+      status = 'success',
+      icon = 'user-friends'
+    )
+  })
+  
+  output$vbox_gdp = renderbs4ValueBox({
+    valueBox(
+      value = 50,
+      subtitle = 'GDP',
+      status = 'success',
+      icon = 'globe-asia'
+    )
+  })
+  
+  output$vbox_hp = renderbs4ValueBox({
+    valueBox(
+      value = 50, # Mean of housing prices over a selected period (e.g. 2015 - 2019)
+      subtitle = 'Housing Prices',
+      status = 'success',
+      icon = 'home'
+    )
+  })
+  
   output$plt_gdp = renderPlotly({
     title = 'Singapore Economy & Housing Price'
     
@@ -42,6 +69,11 @@ server = function(input, output){
   
   # Map
   output$map_sg = renderLeaflet({
+    dist_hdb_flat_type = data_hdb_resale %>%
+      dplyr::distinct(flat_type)
+    
+    dist_hdb_year = data
+    
     sb_hdb_resale = data_hdb_resale %>%
       mutate(
         year = substr(month, start = 1, stop = 4),
@@ -91,12 +123,14 @@ server = function(input, output){
       bins = 1:6 * 200000
     )
     
+    map_layers = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldTopoMap")
+    
     leaflet() %>%
-      addTiles(group = "OpenStreetMap") %>%
-      addProviderTiles("CartoDB.Positron", group = "CartoDB.Positron") %>%
-      addProviderTiles("Esri.WorldTopoMap", group = "Esri.WorldTopoMap") %>%
+      addTiles(group = map_layers[2]) %>%
+      addProviderTiles(map_layers[1], group = map_layers[1]) %>%
+      addProviderTiles(map_layers[3], group = map_layers[3]) %>%
       addLayersControl(
-        baseGroups = c("CartoDB.Positron", "OpenStreetMap", "Esri.WorldTopoMap"),
+        baseGroups = map_layers,
         options = layersControlOptions(collapsed = TRUE)
       ) %>%
       setView(lng = settings$map$lng, lat = settings$map$lat, zoom = settings$map$zoom) %>%
@@ -104,12 +138,12 @@ server = function(input, output){
         data = sb_hdb_resale,
         lng = ~longitude_list_full,
         lat = ~latitude_list_full,
-        radius = 1,
+        radius = sb_hdb_resale$`Median Area` / 10,
         color = ~pal(sb_hdb_resale$`Median Price`),
         opacity= 0.5,
         popup = popup
       ) %>%
-      addMarkers(
+      addMarkers( # Add MRT Stations
         data = data_mrt,
         lng = ~longitude_list,
         lat = ~latitude_list,
@@ -123,6 +157,7 @@ server = function(input, output){
         position = 'bottomright',
         title = "Median Price (S$)"
       )
+    #TODO: radius = data_detached$`Area (sqf)`/1000,
   })
     
 }
