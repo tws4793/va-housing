@@ -12,20 +12,41 @@ tb_index = menuItem(
 pg_index = tabItem(
   tabName = 'index',
   fluidRow(
-    h1('Home')
+    h1('Housing Prices & GDP Overview')
   ),
-  fluidRow('Welcome Home')
+  fluidRow(
+    plotlyOutput('plt_gdp')
+  )
 )
 
 # About
 tb_about = menuItem(
   'About',
   tabName = 'about',
-  icon = 'id-card'
+  icon = 'info'
 )
 pg_about = tabItem(
   tabName = 'about',
-  includeMarkdown('about.Rmd')
+  includeMarkdown('notebook/about.Rmd')
+)
+
+# Map
+tb_map = menuItem(
+  'Map',
+  tabName = 'map',
+  icon = 'map'
+)
+pg_map = tabItem(
+  tabName = 'map',
+  fluidRow(
+    h1('Map')
+  ),
+  fluidRow(
+    leafletOutput('map_sg')
+  ),
+  fluidRow(
+    
+  )
 )
 
 ### SETTINGS
@@ -46,8 +67,8 @@ sidebar = dashboardSidebar(
   opacity = 0.8,
   sidebarMenu(
     tb_index,
-    tb_about,
-    sidebarHeader('HDB Prices')
+    tb_map,
+    tb_about
   )
 )
 
@@ -97,7 +118,8 @@ footer = dashboardFooter(
 body = dashboardBody(
   tabItems(
     pg_index,
-    pg_about
+    pg_about,
+    pg_map
   )
 )
 
