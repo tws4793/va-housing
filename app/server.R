@@ -68,23 +68,51 @@ server = function(input, output){
   })
   
   # Map
-  output$map_sg = renderLeaflet({
-    dist_hdb_flat_type = data_hdb_resale %>%
-      dplyr::distinct(flat_type)
-    
-    dist_hdb_year = data
-    
-    sb_hdb_resale = data_hdb_resale %>%
+  output$slide_year = renderUI({
+    sliderInput(
+      inputId = 'slide_year',
+      label = 'Year',
+      min = 2013,
+      max = 2019,
+      value = 2019
+    )
+  })
+  
+  output$sel_flat_type = renderUI({
+    selectInput(
+      inputId = 'sel_flat_type',
+      label = 'HDB Type',
+      choices = data_hdb_resale %>%
+        distinct(flat_type)
+    )
+  })
+  
+  output$dt_hdb_resale = DT::renderDataTable({
+    data_hdb_resale %>%
+      select(
+        full_address,
+        town,
+        flat_type,
+        flat_model,
+        floor_area_sqm,
+        resale_price,
+        month,
+        storey_range
+      )
+  })
+  
+  map_hdb_prices = reactive({
+    data_hdb_resale %>%
       mutate(
         year = substr(month, start = 1, stop = 4),
         full_address=str_to_title(full_address)
       ) %>%
       filter(
         latitude_list_full != 0,
-        # year == input$hdb_flat_year,
-        # flat_type == input$hdb_flat_type,
-        year == '2019', # Set default
-        flat_type == '4 ROOM'
+        year == input$slide_year,
+        flat_type == input$sel_flat_type
+        # year == '2019'
+        # flat_type == '4 ROOM'
       ) %>%
       group_by(
         full_address,
@@ -99,6 +127,15 @@ server = function(input, output){
         'Median Area' = median(floor_area_sqm),
         'Median Lease Start Date' = median(lease_commence_date)
       )
+  })
+  
+  output$map_sg = renderLeaflet({
+    dist_hdb_flat_type = data_hdb_resale %>%
+      dplyr::distinct(flat_type)
+    
+    dist_hdb_year = data
+    
+    sb_hdb_resale = map_hdb_prices()
     
     popup = paste(
       "Address: ", sb_hdb_resale$full_address, "<br />",

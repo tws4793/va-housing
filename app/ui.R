@@ -55,24 +55,21 @@ pg_map = tabItem(
         ),
         column(
           2,
-          sliderInput(
-            inputId = 'slider1',
-            label = 'Year',
-            min = 2013,
-            max = 2019,
-            value = 2019
-          ),
-          selectInput(
-            inputId = 'select1',
-            label = 'Type',
-            choices = c('1 ROOM', '2 ROOM')
-          )
+          uiOutput('slide_year'),
+          uiOutput('sel_flat_type')
         )
       ),
       fluidRow(
-        'DT'
+        column(
+          12,
+          tags$p()
+        ),
+        column(
+          12,
+          dataTableOutput('dt_hdb_resale')
+        )
       ),
-      collapsible = TRUE,
+      collapsible = FALSE,
       closable = FALSE,
       width = 12,
       height = '100%'

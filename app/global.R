@@ -1,5 +1,6 @@
 packages = c(
     'bs4Dash',
+    'DT',
     'ggplot2',
     'here',
     'leaflet',
