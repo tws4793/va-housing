@@ -1,0 +1,91 @@
+---
+title: "GDP"
+author: "Joon"
+date: "7/31/2020"
+output: html_document
+---
+
+
+```{r message=FALSE}
+library("DT")
+library("tidyverse")
+library("plotly")
+library("ggplot2")
+```
+
+
+```{r message=FALSE}
+singapore_gdp <- read_csv("SGP_GDP.csv")
+```
+
+```{r}
+head(singapore_gdp)
+```
+```{r}
+colnames(singapore_gdp)
+```
+
+
+```{r}
+GDP_in_billionUSD <- as.numeric(as.character(singapore_gdp$GDP)) / 1000000000 %>% round(2)
+```
+
+
+```{r}
+gdp_per_capita <- ggplot(data=singapore_gdp) +
+  geom_line(mapping=aes(x=Year, y = GDP_per_capita), colour="gold") +
+  geom_point(mapping=aes(x=Year, y = GDP_per_capita), size = 0.1, colour = "#000099") +
+  theme(panel.background=element_blank()) +
+  theme(plot.background=element_blank()) +
+  theme(panel.grid.major.y=element_line(color="grey")) +
+  labs(y = "GDP_per_capita in USD") +
+  ggtitle("Singapore GDP_per_capita per year", subtitle = "Source: World Bank. Singapore GDP from 1960 till 2019")
+
+fig <- ggplotly(gdp_per_capita)
+
+fig
+```
+
+
+```{r}
+theme_set(theme_minimal())
+head(economics)
+ggplot(economics, aes(x=date)) + 
+  geom_line(aes(y = psavert), color = "darkred") + 
+  geom_line(aes(y = uempmed), color="steelblue") 
+```
+
+```{r}
+singapore_gdp2 <- read_csv("SGP_GDP2.csv")
+
+head(singapore_gdp2)
+```
+
+
+```{r}
+
+ay1 <- list(
+  tickfont = list(color = "blue"),
+  title = "GDP_per_capita"
+)
+
+ay2 <- list(
+  tickfont = list(color = "orange"),
+  overlaying = "y",
+  side = "right",
+  title = "Housing_Price"
+)
+
+
+fig <- plot_ly() %>%
+  add_lines(x = ~singapore_gdp2$Year, y = ~singapore_gdp2$GDP_per_capita, name = "GDP_per_capita") %>%
+  add_lines(x = ~singapore_gdp2$Year, y = ~singapore_gdp2$HDB_Resale_Price, name = "HDB_Resale_Price", yaxis = "y2") %>%
+  layout(
+    yaxis2 = ay2,
+    yaxis = ay1,
+    xaxis = list(title="Year"),
+    title = "Singapore_Economy & Housing Price"
+  )
+
+fig
+```
