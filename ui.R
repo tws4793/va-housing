@@ -15,6 +15,23 @@ tb_index = menuItem(
 pg_index = tabItem(
   tabName = 'index',
   fluidRow(
+    box(
+      fluidRow(
+        column(
+          6,
+          h1('Year')
+        ),
+        column(
+          6,
+          uiOutput('slide_year_gdp')
+        )
+      ),
+      closable = FALSE,
+      collapsible = FALSE,
+      width = 12
+    )
+  ),
+  fluidRow(
     valueBoxOutput('vbox_hp', width = 3),
     valueBoxOutput('vbox_gdp_gr', width = 3),
     valueBoxOutput('vbox_gdp_pc', width = 3),
@@ -163,7 +180,7 @@ user = sidebarUserPanel(
 sidebar = dashboardSidebar(
   sidebarMenu(
     tb_index,
-    tb_regression,
+    # tb_regression,
     tb_guide,
     tb_about
   ),

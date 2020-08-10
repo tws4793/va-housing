@@ -5,10 +5,15 @@ server = function(input, output){
       inputId = 'slide_year_gdp',
       label = NULL,
       width = '100%',
-      min = as.numeric(min(sb_hdb_resale$year)),
-      max = as.numeric(max(sb_hdb_resale$year)),
-      value = c(2015, 2019)
+      min = as.numeric(min(data_gdp$Year)),
+      max = as.numeric(max(data_gdp$Year)),
+      value = 2019
     )
+  })
+  
+  sb_key_figures = reactive({
+    data_gdp %>%
+      filter(Year == input$slide_year_gdp)
   })
   
   fmt_large = function(number, dp = 2){
@@ -21,8 +26,11 @@ server = function(input, output){
   
   output$vbox_hp = renderbs4ValueBox({
     valueBox(
-      value = paste0('S$ ', fmt_large(data_gdp[2,]$HDB_Resale_Price)),
-      subtitle = 'Average HDB Resale Price',
+      value = span(
+        paste0('S$ ', fmt_large(sb_key_figures()$HDB_Resale_Price)),
+        style = 'font-size: 2.2rem'
+      ),
+      subtitle = paste0('Average HDB Resale Price (', input$slide_year_gdp, ')'),
       status = getAdminLTEColors()[8],
       icon = 'home'
     )
@@ -30,8 +38,11 @@ server = function(input, output){
   
   output$vbox_gdp_gr = renderbs4ValueBox({
     valueBox(
-      value = fmt_percent(data_gdp[2,]$GDP_Growth),
-      subtitle = 'GDP Growth',
+      value = span(
+        fmt_percent(sb_key_figures()$GDP_Growth),
+        style = 'font-size: 2.2rem'
+      ),
+      subtitle = paste0('GDP Growth (', input$slide_year_gdp, ')'),
       status = getAdminLTEColors()[8],
       icon = 'globe-asia',
       width = 3
@@ -40,8 +51,11 @@ server = function(input, output){
   
   output$vbox_gdp_pc = renderbs4ValueBox({
     valueBox(
-      value = paste0('S$ ', fmt_large(data_gdp[2,]$GDP_per_capita)),
-      subtitle = 'GDP per Capita',
+      value = span(
+        paste0('S$ ', fmt_large(sb_key_figures()$GDP_per_capita)),
+        style = 'font-size: 2.2rem'
+      ),
+      subtitle = paste0('GDP per Capita (', input$slide_year_gdp, ')'),
       status = getAdminLTEColors()[8],
       icon = 'user-friends',
       width = 3
@@ -50,8 +64,11 @@ server = function(input, output){
   
   output$vbox_inf = renderbs4ValueBox({
     valueBox(
-      value = fmt_percent(data_gdp[2,]$Inflation),
-      subtitle = 'Inflation',
+      value = span(
+        fmt_percent(sb_key_figures()$Inflation),
+        style = 'font-size: 2.2rem'
+      ),
+      subtitle = paste0('Overall Inflation (', input$slide_year_gdp, ')'),
       status = getAdminLTEColors()[8],
       icon = 'chart-line',
       width = 3
