@@ -4,9 +4,49 @@ output: html_notebook
 ---
 
 # About
+This is a dashboard visualising (to be updated). This visualisation is a main deliverable for the SMU **ISSS608 Visual Analytics and Applications** course. The project requires students to build a dashboard on a topic of choice following visualisation best practices that were taught in the course.
 
-# Team Members
+## The Topic
+
+- Find out what factors affect housing prices
+- Compare the effect of COVID-19 on housing prices vs. past economic crises 
+
+Our team will be studying the trends in resale HDB prices here in Singapore. We will analyse how different factors (i.e. Distance from nearest MRT station, distance from Central Business District, flat size, floor, remaining lease duration) affect the resale price and develop a tool that can identify suitable apartments across Singapore based on different criteria. 
+
+We will also be performing a time series analysis to determine how the overall economic situation in the world affects resale prices.
+
+## Significance
+
+- Give Singaporeans a better understanding of prices when looking for a house
+- How much dip in prices is expected during an economic crisis and the duration of this drop 
+
+HDB resale prices are a constant concern for Singaporeans, especially those who are getting married and planning to start a family of their own. Although the government provides significant subsidies, there is still the need to understand the factors that contribute to differences in prices for the resale market. 
+
+Additionally, analysing the trends in past crises could provide a means of understanding how HDB resale prices might be affected by the ongoing Covid-19 crisis, the largest pandemic since the Spanish flu in 1918. With cases on the rise again in major economies1, there is a real risk of further economic impact which may result in changes to housing prices.
+
+## Datasets
+
+To be updated
+
+# Setup
+
+## Using `runGitHub` Command
+
+To run the codes, simply run the command in any R environment that has `shiny` installed:
+
+```{r}
+shiny::runGitHub('va-housing','tws4793')
+```
+
+# Credits
+
+## Contributions
+This is a joint contribution by:
+
 - Jonathan LEONG Zhi Jian
 - KIM Joon Hyung
 - Ryan TAN Yi Hon
 - TEO Wei Shen
+
+## Acknowledgements
+We would like to express our heartfelt thanks to [CAO Kai](https://www.smu.edu.sg/faculty/profile/164621/Kai-CAO), Assistant Professor of Information Systems at SMU for his guidance in this project.

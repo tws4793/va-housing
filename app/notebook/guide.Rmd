@@ -1,0 +1,13 @@
+---
+title: "User Guide"
+output: html_notebook
+---
+
+# User Guide
+
+## Dashboard
+
+The main dashboard is comprised of three parts:
+
+## Regression
+
