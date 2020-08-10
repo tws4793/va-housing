@@ -14,28 +14,48 @@ server = function(input, output){
   )
   
   # GDP
-  output$vbox_gdp_pc = renderbs4ValueBox({
-    valueBox(
-      value = 25,
-      subtitle = 'GDP per Capita',
-      status = 'success',
-      icon = 'user-friends'
-    )
-  })
-  
-  output$vbox_gdp = renderbs4ValueBox({
-    valueBox(
-      value = 50,
-      subtitle = 'GDP',
-      status = 'success',
-      icon = 'globe-asia'
+  output$slide_year_gdp = renderUI({
+    sliderInput(
+      inputId = 'slide_year_gdp',
+      label = NULL,
+      width = '100%',
+      min = as.numeric(min(sb_hdb_resale$year)),
+      max = as.numeric(max(sb_hdb_resale$year)),
+      value = c(2015, 2019)
     )
   })
   
   output$vbox_hp = renderbs4ValueBox({
     valueBox(
       value = 50, # Mean of housing prices over a selected period (e.g. 2015 - 2019)
-      subtitle = 'Housing Prices',
+      subtitle = 'Housing Price',
+      status = 'success',
+      icon = 'home'
+    )
+  })
+  
+  output$vbox_gdp_gr = renderbs4ValueBox({
+    valueBox(
+      value = 25,
+      subtitle = 'GDP Growth',
+      status = 'success',
+      icon = 'user-friends'
+    )
+  })
+  
+  output$vbox_gdp_pc = renderbs4ValueBox({
+    valueBox(
+      value = 50,
+      subtitle = 'GDP per Capita',
+      status = 'success',
+      icon = 'globe-asia'
+    )
+  })
+  
+  output$vbox_inf = renderbs4ValueBox({
+    valueBox(
+      value = 50, # Mean of housing prices over a selected period (e.g. 2015 - 2019)
+      subtitle = 'Inflation',
       status = 'success',
       icon = 'home'
     )
@@ -44,26 +64,66 @@ server = function(input, output){
   output$plt_gdp = renderPlotly({
     title = 'Singapore Economy & Housing Price'
     
+    y1_max = max(data_gdp$GDP_per_capita)
+    y2_max = max(data_gdp$HDB_Resale_Price)
+    y1_const = 3811.221
+    y2_const = 23559
+    y_tick_bins = 5
+    
     axis_y1 = list(
+      title = 'GDP per Capita',
       tickfont = list(color = 'blue'),
-      title = 'GDP per Capita'
+      tick0 = 0,
+      range = c(0, y1_max + y1_const),
+      dtick = (y1_max + y1_const) / y_tick_bins,
+      autotick = FALSE,
+      color = 'blue'
     )
     
     axis_y2 = list(
-      tickfont = list(color = "orange"),
-      overlaying = "y",
-      side = "right",
-      title = "Housing_Price"
+      title = 'Housing Price',
+      tickfont = list(color = 'red'),
+      overlaying = 'y',
+      side = 'right',
+      tick0 = 0,
+      range = c(0, y2_max + y2_const),
+      dtick = (y2_max + y2_const) / y_tick_bins,
+      autotick = FALSE,
+      color = 'blue',
+      gridcolor = 'lightgrey'
     )
     
     plot_ly() %>%
-      add_lines(x = ~data_gdp$Year, y = ~data_gdp$GDP_per_capita, name = 'GDP per Capita') %>%
-      add_lines(x = ~data_gdp$Year, y = ~data_gdp$HDB_Resale_Price, name = 'HDB Resale Price', yaxis = 'y2') %>%
+      add_trace(
+        x = ~data_gdp$Year,
+        y = ~data_gdp$GDP_per_capita,
+        name = 'GDP per Capita',
+        mode = 'lines+markers'
+      ) %>%
+      add_trace(
+        x = ~data_gdp$Year,
+        y = ~data_gdp$HDB_Resale_Price,
+        name = 'HDB Resale Price',
+        mode = 'lines+markers',
+        yaxis = 'y2',
+        line = list(color = "red", width = 2),
+        marker = list(color = "red", width = 2)
+      ) %>%
       layout(
-        title = title,
+        # title = title,
         yaxis = axis_y1,
         yaxis2 = axis_y2,
-        xaxis = list(title = 'Year')
+        xaxis = list(
+          title = 'Year',
+          color = 'black',
+          linecolor = 'lightgrey',
+          showgrid = FALSE,
+          ticks = 'outside',
+          tickcolor = 'lightgrey'
+        ),
+        hovermode = 'x unified',
+        legend = list(x = 0.1, y = 0.1)
+        # height = 500
       )
   })
   
@@ -72,53 +132,41 @@ server = function(input, output){
     sliderInput(
       inputId = 'slide_year',
       label = 'Year',
-      min = 2013,
-      max = 2019,
-      value = 2019
+      min = as.numeric(min(sb_hdb_resale$year)),
+      max = as.numeric(max(sb_hdb_resale$year)),
+      value = as.numeric(max(sb_hdb_resale$year))
     )
   })
   
   output$sel_flat_type = renderUI({
+    choices = sb_hdb_resale %>%
+      distinct(flat_type)
+    append(choices, 'all')
+    
     selectInput(
       inputId = 'sel_flat_type',
       label = 'HDB Type',
-      choices = data_hdb_resale %>%
-        distinct(flat_type)
+      choices = choices
     )
   })
   
-  output$dt_hdb_resale = DT::renderDataTable({
-    data_hdb_resale %>%
-      select(
-        full_address,
-        town,
-        flat_type,
-        flat_model,
-        floor_area_sqm,
-        resale_price,
-        month,
-        storey_range
-      )
-  })
-  
-  map_hdb_prices = reactive({
-    data_hdb_resale %>%
-      mutate(
-        year = substr(month, start = 1, stop = 4),
-        full_address=str_to_title(full_address)
-      ) %>%
+  sb_hdb_resale_filter = reactive({
+    sb_hdb_resale %>%
       filter(
         latitude_list_full != 0,
         year == input$slide_year,
         flat_type == input$sel_flat_type
-        # year == '2019'
-        # flat_type == '4 ROOM'
-      ) %>%
+      )
+  })
+  
+  output$map_sg = renderLeaflet({
+    sb_hdb_resale = sb_hdb_resale_filter() %>%
       group_by(
         full_address,
         latitude_list_full,
         longitude_list_full,
-        closest_MRT,closest_distance,
+        closest_MRT,
+        closest_distance,
         CBD_dist
       ) %>%
       summarize(
@@ -127,15 +175,6 @@ server = function(input, output){
         'Median Area' = median(floor_area_sqm),
         'Median Lease Start Date' = median(lease_commence_date)
       )
-  })
-  
-  output$map_sg = renderLeaflet({
-    dist_hdb_flat_type = data_hdb_resale %>%
-      dplyr::distinct(flat_type)
-    
-    dist_hdb_year = data
-    
-    sb_hdb_resale = map_hdb_prices()
     
     popup = paste(
       "Address: ", sb_hdb_resale$full_address, "<br />",
@@ -196,5 +235,16 @@ server = function(input, output){
       )
     #TODO: radius = data_detached$`Area (sqf)`/1000,
   })
-    
+  
+  output$dt_hdb_resale = DT::renderDataTable({
+    sb_hdb_resale_filter() %>%
+      select(
+        'Full Address' = full_address,
+        'Town' = town,
+        'Area (sqm)' = floor_area_sqm,
+        'Resale Price' = resale_price,
+        'Month' = month,
+        'Storey Range' = storey_range
+      )
+  })
 }

@@ -1,29 +1,94 @@
 # ui.R
 # ======
 
+### Components
+# comp_map = 
+
 ### PAGES
 
 # Index
 tb_index = menuItem(
   'Dashboard',
   tabName = 'index',
-  icon = 'home'
+  icon = 'tachometer-alt'
 )
 pg_index = tabItem(
   tabName = 'index',
+  # fluidRow(
+  #   box(
+  #     fluidRow(
+  #       column(
+  #         8,
+  #         'Select a range of years'
+  #       ),
+  #       column(
+  #         4,
+  #         uiOutput('slide_year_gdp')
+  #       )
+  #     ),
+  #     title = 'Options',
+  #     collapsible = TRUE,
+  #     closable = FALSE,
+  #     maximizable = TRUE,
+  #     width = 12
+  #   )
+  # ),
   fluidRow(
+    valueBoxOutput('vbox_hp'),
+    valueBoxOutput('vbox_gdp_gr'),
     valueBoxOutput('vbox_gdp_pc'),
-    valueBoxOutput('vbox_gdp'),
-    valueBoxOutput('vbox_hp')
+    valueBoxOutput('vbox_inf')
   ),
   fluidRow(
     box(
       plotlyOutput('plt_gdp'),
-      collapsible = FALSE,
+      title = 'Singapore Economy vs Housing Price',
+      collapsible = TRUE,
       closable = FALSE,
-      width = 12
+      maximizable = TRUE,
+      width = 6,
+      status = 'secondary'
+    ),
+    box(
+      fluidRow(
+        column(
+          12,
+          leafletOutput('map_sg')
+        )
+      ),
+      title = 'Property Price Distribution',
+      enable_sidebar = TRUE,
+      sidebar_content = fluidRow(
+        column(
+          12,
+          uiOutput('slide_year'),
+          uiOutput('sel_flat_type')
+        )
+      ),
+      collapsible = TRUE,
+      closable = FALSE,
+      maximizable = TRUE,
+      width = 6,
+      status = 'secondary'
     )
-    #TODO: Area shading
+  ),
+  fluidRow(
+    box(
+      fluidRow(
+        column(
+          12,
+          dataTableOutput('dt_hdb_resale')
+        )
+      ),
+      title = 'Historical Transactions',
+      collapsible = TRUE,
+      collapsed = TRUE,
+      closable = FALSE,
+      maximizable = TRUE,
+      overflow = TRUE,
+      width = 12,
+      status = 'secondary'
+    )
   )
 )
 
@@ -35,47 +100,53 @@ tb_about = menuItem(
 )
 pg_about = tabItem(
   tabName = 'about',
-  includeMarkdown('notebook/about.Rmd')
-)
-
-# Map
-tb_map = menuItem(
-  'Housing Prices',
-  tabName = 'map',
-  icon = 'map'
-)
-pg_map = tabItem(
-  tabName = 'map',
   fluidRow(
-    box(
-      fluidRow(
-        column(
-          10,
-          leafletOutput('map_sg')
-        ),
-        column(
-          2,
-          uiOutput('slide_year'),
-          uiOutput('sel_flat_type')
-        )
-      ),
-      fluidRow(
-        column(
-          12,
-          tags$p()
-        ),
-        column(
-          12,
-          dataTableOutput('dt_hdb_resale')
-        )
-      ),
-      collapsible = FALSE,
-      closable = FALSE,
-      width = 12,
-      height = '100%'
+    column(
+      12,
+      includeMarkdown('notebook/about.Rmd')
     )
   )
 )
+
+# Map
+# tb_map = menuItem(
+#   'Housing Prices',
+#   tabName = 'map',
+#   icon = 'map'
+# )
+# pg_map = tabItem(
+#   tabName = 'map',
+#   fluidRow(
+#     box(
+#       fluidRow(
+#         column(
+#           10,
+#           leafletOutput('map_sg')
+#         ),
+#         column(
+#           2,
+#           uiOutput('slide_year'),
+#           uiOutput('sel_flat_type')
+#         )
+#       ),
+#       fluidRow(
+#         column(
+#           12,
+#           tags$p()
+#         ),
+#         column(
+#           12,
+#           dataTableOutput('dt_hdb_resale')
+#         )
+#       ),
+#       collapsible = FALSE,
+#       closable = FALSE,
+#       maximizable = TRUE,
+#       width = 12,
+#       height = '100%'
+#     )
+#   )
+# )
 
 # Regression
 tb_regression = menuItem(
@@ -98,7 +169,12 @@ tb_help = menuItem(
 )
 pg_help = tabItem(
   tabName = 'help',
-  includeMarkdown('notebook/help.Rmd')
+  fluidRow(
+    column(
+      12,
+      includeMarkdown('notebook/help.Rmd')
+    )
+  )
 )
 
 ### SETTINGS
@@ -119,7 +195,7 @@ sidebar = dashboardSidebar(
   opacity = 0.8,
   sidebarMenu(
     tb_index,
-    tb_map,
+    # tb_map,
     tb_regression,
     tb_help,
     tb_about
@@ -140,25 +216,13 @@ navbar = dashboardHeader(
 ctrl_bar = dashboardControlbar(
   skin = 'dark',
   title = 'Options',
-  sliderInput(
-    inputId = 'obs',
-    label = 'Number of observations:',
-    min = 0,
-    max = 1000,
-    value = 500
-  ),
-  column(
-    width = 12,
-    align = 'center',
-    radioButtons(
-      inputId = 'dist',
-      label = 'Distribution type:',
-      c('Normal' = 'norm',
-        'Uniform' = 'unif',
-        'Log-normal' = 'lnorm',
-        'Exponential' = 'exp')
-    )
-  )
+  # fluidRow(
+  #   column(
+  #     12,
+  #     uiOutput('slide_year'),
+  #     uiOutput('sel_flat_type')
+  #   )
+  # )
 )
 
 # Footer
@@ -172,7 +236,7 @@ footer = dashboardFooter(
 body = dashboardBody(
   tabItems(
     pg_index,
-    pg_map,
+    # pg_map,
     pg_regression,
     pg_about,
     pg_help
@@ -183,7 +247,7 @@ body = dashboardBody(
 ui = dashboardPage(
   old_school = FALSE,
   sidebar_mini = TRUE,
-  sidebar_collapsed = FALSE,
+  sidebar_collapsed = TRUE,
   controlbar_collapsed = TRUE,
   controlbar_overlay = TRUE,
   title = 'Housing Prices',
