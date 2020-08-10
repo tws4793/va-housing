@@ -129,5 +129,6 @@ $RECYCLE.BIN/
 
 ### Others ###
 *.nb.html
+rsconnect/
 
 # End of https://www.toptal.com/developers/gitignore/api/r,windows,macos,linux,data

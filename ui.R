@@ -28,7 +28,7 @@ pg_index = tabItem(
       closable = FALSE,
       maximizable = TRUE,
       width = 12,
-      status = 'secondary'
+      status = getAdminLTEColors()[8]
     )
   ),
   fluidRow(
@@ -53,7 +53,7 @@ pg_index = tabItem(
       closable = FALSE,
       maximizable = TRUE,
       width = 6,
-      status = 'secondary'
+      status = getAdminLTEColors()[8]
     ),
     box(
       fluidRow(
@@ -75,7 +75,7 @@ pg_index = tabItem(
       maximizable = TRUE,
       overflow = TRUE,
       width = 6,
-      status = 'secondary'
+      status = getAdminLTEColors()[8]
     )
   )
 )
@@ -161,18 +161,18 @@ user = sidebarUserPanel(
 
 # Sidebar
 sidebar = dashboardSidebar(
-  skin = 'dark',
-  status = getAdminLTEColors()[8],
-  title = 'Housing Price',
-  brandColor = getAdminLTEColors()[8],
-  elevation = 3,
-  opacity = 0.8,
   sidebarMenu(
     tb_index,
     tb_regression,
     tb_guide,
     tb_about
-  )
+  ),
+  skin = 'dark',
+  status = getAdminLTEColors()[8],
+  title = 'Housing Price',
+  brandColor = getAdminLTEColors()[8],
+  elevation = 13,
+  opacity = 0.8
 )
 
 # Navbar

@@ -11,20 +11,28 @@ server = function(input, output){
     )
   })
   
+  fmt_large = function(number, dp = 2){
+    format(round(number, dp), nsmall = 1, big.mark = ',')
+  }
+  
+  fmt_percent = function(number){
+    paste0(round(number, 2), '%')
+  }
+  
   output$vbox_hp = renderbs4ValueBox({
     valueBox(
-      value = 50, # Mean of housing prices over a selected period (e.g. 2015 - 2019)
-      subtitle = 'Housing Price',
-      status = 'success',
+      value = paste0('S$ ', fmt_large(data_gdp[2,]$HDB_Resale_Price)),
+      subtitle = 'Average HDB Resale Price',
+      status = getAdminLTEColors()[8],
       icon = 'home'
     )
   })
   
   output$vbox_gdp_gr = renderbs4ValueBox({
     valueBox(
-      value = 25,
+      value = fmt_percent(data_gdp[2,]$GDP_Growth),
       subtitle = 'GDP Growth',
-      status = 'success',
+      status = getAdminLTEColors()[8],
       icon = 'globe-asia',
       width = 3
     )
@@ -32,9 +40,9 @@ server = function(input, output){
   
   output$vbox_gdp_pc = renderbs4ValueBox({
     valueBox(
-      value = 50,
+      value = paste0('S$ ', fmt_large(data_gdp[2,]$GDP_per_capita)),
       subtitle = 'GDP per Capita',
-      status = 'success',
+      status = getAdminLTEColors()[8],
       icon = 'user-friends',
       width = 3
     )
@@ -42,9 +50,9 @@ server = function(input, output){
   
   output$vbox_inf = renderbs4ValueBox({
     valueBox(
-      value = 50,
+      value = fmt_percent(data_gdp[2,]$Inflation),
       subtitle = 'Inflation',
-      status = 'success',
+      status = getAdminLTEColors()[8],
       icon = 'chart-line',
       width = 3
     )
@@ -110,9 +118,8 @@ server = function(input, output){
           ticks = 'outside',
           tickcolor = 'lightgrey'
         ),
-        hovermode = 'x unified',
-        legend = list(x = 0.1, y = 0.1)
-        # height = 500
+        hovermode = 'x unified'
+        # legend = list(x = 0.1, y = 0.1)
       )
   })
   

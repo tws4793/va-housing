@@ -1,5 +1,6 @@
 ---
 title: "About"
+pagetitle: About
 output: html_notebook
 ---
 

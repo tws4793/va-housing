@@ -1,5 +1,6 @@
 ---
 title: "User Guide"
+pagetitle: User Guide
 output: html_notebook
 ---
 
