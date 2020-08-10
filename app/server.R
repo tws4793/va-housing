@@ -1,18 +1,4 @@
 server = function(input, output){
-  
-  # Setting
-  output$setting_status = renderText({
-    paste()
-  })
-  
-  # User
-  output$usr_img = renderText({
-    paste('https://vignette.wikia.nocookie.net/surrealmemes/images/0/09/Meme_Man_HD.png')}
-  )
-  output$usr_name = renderText({
-    paste('Meme Man')}
-  )
-  
   # GDP
   output$slide_year_gdp = renderUI({
     sliderInput(
@@ -39,7 +25,8 @@ server = function(input, output){
       value = 25,
       subtitle = 'GDP Growth',
       status = 'success',
-      icon = 'user-friends'
+      icon = 'globe-asia',
+      width = 3
     )
   })
   
@@ -48,16 +35,18 @@ server = function(input, output){
       value = 50,
       subtitle = 'GDP per Capita',
       status = 'success',
-      icon = 'globe-asia'
+      icon = 'user-friends',
+      width = 3
     )
   })
   
   output$vbox_inf = renderbs4ValueBox({
     valueBox(
-      value = 50, # Mean of housing prices over a selected period (e.g. 2015 - 2019)
+      value = 50,
       subtitle = 'Inflation',
       status = 'success',
-      icon = 'home'
+      icon = 'chart-line',
+      width = 3
     )
   })
   
@@ -89,7 +78,7 @@ server = function(input, output){
       range = c(0, y2_max + y2_const),
       dtick = (y2_max + y2_const) / y_tick_bins,
       autotick = FALSE,
-      color = 'blue',
+      color = 'red',
       gridcolor = 'lightgrey'
     )
     
@@ -233,18 +222,27 @@ server = function(input, output){
         position = 'bottomright',
         title = "Median Price (S$)"
       )
-    #TODO: radius = data_detached$`Area (sqf)`/1000,
   })
   
-  output$dt_hdb_resale = DT::renderDataTable({
-    sb_hdb_resale_filter() %>%
-      select(
-        'Full Address' = full_address,
-        'Town' = town,
-        'Area (sqm)' = floor_area_sqm,
-        'Resale Price' = resale_price,
-        'Month' = month,
-        'Storey Range' = storey_range
-      )
-  })
+  output$dt_hdb_resale = DT::renderDataTable(
+    datatable(
+      sb_hdb_resale_filter() %>%
+        select(
+          'Month' = month,
+          'Town' = town,
+          'Address' = full_address,
+          'Storey Range' = storey_range,
+          'Area (sqm)' = floor_area_sqm,
+          'Resale Price' = resale_price,
+        ),
+      options = list(
+        pageLength = 5,
+        lengthMenu = c(5, 10, 25, 50, 100),
+        order = list(
+          list(0, 'asc')
+        )
+      ),
+      rownames = FALSE
+    )
+  )
 }

@@ -14,35 +14,41 @@ tb_index = menuItem(
 )
 pg_index = tabItem(
   tabName = 'index',
-  # fluidRow(
-  #   box(
-  #     fluidRow(
-  #       column(
-  #         8,
-  #         'Select a range of years'
-  #       ),
-  #       column(
-  #         4,
-  #         uiOutput('slide_year_gdp')
-  #       )
-  #     ),
-  #     title = 'Options',
-  #     collapsible = TRUE,
-  #     closable = FALSE,
-  #     maximizable = TRUE,
-  #     width = 12
-  #   )
-  # ),
   fluidRow(
-    valueBoxOutput('vbox_hp'),
-    valueBoxOutput('vbox_gdp_gr'),
-    valueBoxOutput('vbox_gdp_pc'),
-    valueBoxOutput('vbox_inf')
+    valueBoxOutput('vbox_hp', width = 3),
+    valueBoxOutput('vbox_gdp_gr', width = 3),
+    valueBoxOutput('vbox_gdp_pc', width = 3),
+    valueBoxOutput('vbox_inf', width = 3)
   ),
   fluidRow(
     box(
       plotlyOutput('plt_gdp'),
       title = 'Singapore Economy vs Housing Price',
+      collapsible = TRUE,
+      closable = FALSE,
+      maximizable = TRUE,
+      width = 12,
+      status = 'secondary'
+    )
+  ),
+  fluidRow(
+    box(
+      fluidRow(
+        column(
+          12,
+          leafletOutput('map_sg')
+        )
+      ),
+      title = 'HDB Resale Price Distribution',
+      enable_sidebar = TRUE,
+      sidebar_content = fluidRow(
+        column(
+          12,
+          uiOutput('slide_year'),
+          uiOutput('sel_flat_type')
+        )
+      ),
+      sidebar_icon = 'cog',
       collapsible = TRUE,
       closable = FALSE,
       maximizable = TRUE,
@@ -53,40 +59,22 @@ pg_index = tabItem(
       fluidRow(
         column(
           12,
-          leafletOutput('map_sg')
-        )
-      ),
-      title = 'Property Price Distribution',
-      enable_sidebar = TRUE,
-      sidebar_content = fluidRow(
-        column(
-          12,
-          uiOutput('slide_year'),
-          uiOutput('sel_flat_type')
-        )
-      ),
-      collapsible = TRUE,
-      closable = FALSE,
-      maximizable = TRUE,
-      width = 6,
-      status = 'secondary'
-    )
-  ),
-  fluidRow(
-    box(
-      fluidRow(
-        column(
-          12,
           dataTableOutput('dt_hdb_resale')
         )
       ),
-      title = 'Historical Transactions',
+      fluidRow(
+        column(
+          12,
+          p()
+        )
+      ),
+      title = 'HDB Resale Transactions',
       collapsible = TRUE,
-      collapsed = TRUE,
+      collapsed = FALSE,
       closable = FALSE,
       maximizable = TRUE,
       overflow = TRUE,
-      width = 12,
+      width = 6,
       status = 'secondary'
     )
   )
@@ -108,46 +96,6 @@ pg_about = tabItem(
   )
 )
 
-# Map
-# tb_map = menuItem(
-#   'Housing Prices',
-#   tabName = 'map',
-#   icon = 'map'
-# )
-# pg_map = tabItem(
-#   tabName = 'map',
-#   fluidRow(
-#     box(
-#       fluidRow(
-#         column(
-#           10,
-#           leafletOutput('map_sg')
-#         ),
-#         column(
-#           2,
-#           uiOutput('slide_year'),
-#           uiOutput('sel_flat_type')
-#         )
-#       ),
-#       fluidRow(
-#         column(
-#           12,
-#           tags$p()
-#         ),
-#         column(
-#           12,
-#           dataTableOutput('dt_hdb_resale')
-#         )
-#       ),
-#       collapsible = FALSE,
-#       closable = FALSE,
-#       maximizable = TRUE,
-#       width = 12,
-#       height = '100%'
-#     )
-#   )
-# )
-
 # Regression
 tb_regression = menuItem(
   'Regression',
@@ -157,22 +105,48 @@ tb_regression = menuItem(
 pg_regression = tabItem(
   tabName = 'regression',
   fluidRow(
-    h1('Prediction')
+    box(
+      fluidRow(
+        column(
+          12,
+          'Settings'
+        )
+      ),
+      hr(),
+      fluidRow(
+        column(
+          12,
+          span(
+            strong('87.5'),
+            style = 'font-size: 200px',
+            align = 'center'
+          )
+        )
+      ),
+      title = 'Prediction',
+      collapsible = FALSE,
+      collapsed = FALSE,
+      closable = FALSE,
+      maximizable = TRUE,
+      overflow = TRUE,
+      width = 12,
+      status = 'secondary'
+    )
   )
 )
 
 # Help
-tb_help = menuItem(
-  'Help',
-  tabName = 'help',
+tb_guide = menuItem(
+  'User Guide',
+  tabName = 'guide',
   icon = 'question'
 )
-pg_help = tabItem(
-  tabName = 'help',
+pg_guide = tabItem(
+  tabName = 'guide',
   fluidRow(
     column(
       12,
-      includeMarkdown('notebook/help.Rmd')
+      includeMarkdown('notebook/guide.Rmd')
     )
   )
 )
@@ -195,9 +169,8 @@ sidebar = dashboardSidebar(
   opacity = 0.8,
   sidebarMenu(
     tb_index,
-    # tb_map,
     tb_regression,
-    tb_help,
+    tb_guide,
     tb_about
   )
 )
@@ -236,10 +209,9 @@ footer = dashboardFooter(
 body = dashboardBody(
   tabItems(
     pg_index,
-    # pg_map,
     pg_regression,
     pg_about,
-    pg_help
+    pg_guide
   )
 )
 
