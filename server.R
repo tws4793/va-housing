@@ -163,6 +163,20 @@ server = function(input, output){
     )
   })
   
+  output$ren_btn_reset_map = renderUI({
+    actionButton('btn_reset_map', 'Reset Map', width = '100%')
+  })
+  
+  observe({
+    input$btn_reset_map
+    leafletProxy('map_sg') %>%
+      setView(
+        lng = settings$map$lng,
+        lat = settings$map$lat,
+        zoom = settings$map$zoom
+      )
+  })
+  
   sb_hdb_resale_filter = reactive({
     sb_hdb_resale %>%
       filter(
@@ -170,6 +184,10 @@ server = function(input, output){
         year == input$slide_year,
         flat_type == input$sel_flat_type
       )
+  })
+  
+  output$map_sg_ui = renderUI({
+    leafletOutput('map_sg')
   })
   
   output$map_sg = renderLeaflet({
@@ -222,7 +240,11 @@ server = function(input, output){
         baseGroups = map_layers,
         options = layersControlOptions(collapsed = TRUE)
       ) %>%
-      setView(lng = settings$map$lng, lat = settings$map$lat, zoom = settings$map$zoom) %>%
+      setView(
+        lng = settings$map$lng,
+        lat = settings$map$lat,
+        zoom = settings$map$zoom
+      ) %>%
       addCircleMarkers(
         data = sb_hdb_resale,
         lng = ~longitude_list_full,

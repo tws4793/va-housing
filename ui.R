@@ -3,6 +3,29 @@
 
 ### Components
 # comp_map = 
+settings_map = fluidRow(
+  column(
+    12,
+    fluidRow(
+      column(
+        12,
+        uiOutput('slide_year')
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        uiOutput('sel_flat_type')
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        uiOutput('ren_btn_reset_map')
+      )
+    )
+  )
+)
 
 ### PAGES
 
@@ -53,18 +76,14 @@ pg_index = tabItem(
       fluidRow(
         column(
           12,
-          leafletOutput('map_sg')
+          # tags$style(type = "text/css", "#map_sg {height: calc(100vh - 80px) !important;}"),
+          uiOutput('map_sg_ui')
         )
       ),
+      inputId = 'box_map',
       title = 'HDB Resale Price Distribution',
       enable_sidebar = TRUE,
-      sidebar_content = fluidRow(
-        column(
-          12,
-          uiOutput('slide_year'),
-          uiOutput('sel_flat_type')
-        )
-      ),
+      sidebar_content = settings_map,
       sidebar_icon = 'cog',
       collapsible = TRUE,
       closable = FALSE,
