@@ -1,0 +1,386 @@
+---
+title: "Untitled"
+author: "Jonathan Leong"
+date: "8/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import Libraries
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(rjson)
+library(jsonlite)
+library(RCurl)
+library(MASS)
+```
+
+## Extract HDB Resale Data using API query
+
+#extract entries from 2017-2019
+```{r, echo=FALSE}
+
+url <- "https://data.gov.sg/api/action/datastore_search?resource_id=42ff9cfe-abe5-4b54-beda-c88f9bb438ee&limit=150000"
+fullurl <- URLencode(url)
+
+
+#import data from website to dataframe
+data1 <- fromJSON(getURL(fullurl))
+
+HDB_data_1719 <- data1$result$records
+
+head(HDB_data_1719)
+
+```
+
+#extract entries from 2015-2016
+```{r}
+
+url <- "https://data.gov.sg/api/action/datastore_search?resource_id=1b702208-44bf-4829-b620-4615ee19b57c&limit=38000"
+fullurl <- URLencode(url)
+
+
+#import data from website to dataframe
+data2 <- fromJSON(getURL(fullurl))
+
+HDB_data_1516 <- data2$result$records
+
+```
+
+#extract entries from 2012-2014
+```{r}
+
+url <- "https://data.gov.sg/api/action/datastore_search?resource_id=83b2fc37-ce8c-4df4-968b-370fd818138b&limit=55000"
+fullurl <- URLencode(url)
+
+
+#import data from website to dataframe
+data3 <- fromJSON(getURL(fullurl))
+
+HDB_data_1214 <- data3$result$records
+
+```
+
+#extract entries from 2000-2012
+```{r}
+
+url <- "https://data.gov.sg/api/action/datastore_search?resource_id=8c00bf08-9124-479e-aeca-7cc411d884c4&limit=370000"
+fullurl <- URLencode(url)
+
+
+#import data from website to dataframe
+data4 <- fromJSON(getURL(fullurl))
+
+HDB_data_0012 <- data4$result$records
+
+```
+
+```{r}
+HDB_data <- rbind(HDB_data_0012,HDB_data_1214)
+HDB_data_1516_2 <- HDB_data_1516[, -8]
+HDB_data <- rbind(HDB_data, HDB_data_1516_2)
+HDB_data_1719_2 <- HDB_data_1719[, -8]
+HDB_data <- rbind(HDB_data, HDB_data_1719_2)
+```
+
+# Export Intermediate File
+```{r}
+write_csv(HDB_data, path = "HDB Resale data.csv")
+```
+
+#Download Longitude/Latitude and X/Y Coordinates from Onemap
+```{r}
+all_addresses <- paste(HDB_data$block, HDB_data$street_name)
+
+HDB_data$full_address <- all_addresses
+
+unique_addresses <- unique(all_addresses)
+```
+
+```{r}
+latitude_list <- c()
+longitude_list <- c()
+X_list <- c()
+Y_list <- c()
+options(digits = 20)
+
+for (i in c(1:3000)) {
+  addurl <- paste0("https://developers.onemap.sg/commonapi/search?searchVal=",
+                   unique_addresses[i],
+                   "&returnGeom=Y&getAddrDetails=N&pageNum=1")
+  
+  address_search <- URLencode(addurl)
+  search_result <- fromJSON(address_search)
+  
+  if (as.numeric(search_result$found) > 0) {
+    latitude <- as.numeric(search_result$results[1,]['LATITUDE'])
+    longitude <- as.numeric(search_result$results[1,]['LONGITUDE'])
+    X <- as.numeric(search_result$results[1,]['X'])
+    Y <- as.numeric(search_result$results[1,]['Y'])
+  } else {
+    latitude <- 0
+    longitude <- 0
+    X <- 0
+    Y <- 0
+  }
+  
+  latitude_list <- append(latitude_list, latitude)
+  longitude_list <- append(longitude_list, longitude)
+  X_list <- append(X_list, X)
+  Y_list <- append(Y_list, Y)
+  
+}
+```
+
+```{r}
+latitude_list2 <- c()
+longitude_list2 <- c()
+X_list2 <- c()
+Y_list2 <- c()
+
+for (i in c(3001:6000)) {
+  addurl <- paste0("https://developers.onemap.sg/commonapi/search?searchVal=",
+                   unique_addresses[i],
+                   "&returnGeom=Y&getAddrDetails=N&pageNum=1")
+  
+  address_search <- URLencode(addurl)
+  search_result <- fromJSON(address_search)
+  
+  if (as.numeric(search_result$found) > 0) {
+    latitude <- as.numeric(search_result$results[1,]['LATITUDE'])
+    longitude <- as.numeric(search_result$results[1,]['LONGITUDE'])
+    X <- as.numeric(search_result$results[1,]['X'])
+    Y <- as.numeric(search_result$results[1,]['Y'])
+  } else {
+    latitude <- 0
+    longitude <- 0
+    X <- 0
+    Y <- 0
+  }
+  
+  latitude_list2 <- append(latitude_list2, latitude)
+  longitude_list2 <- append(longitude_list2, longitude)
+  X_list2 <- append(X_list2, X)
+  Y_list2 <- append(Y_list2, Y)
+  
+}
+```
+
+```{r}
+latitude_list3 <- c()
+longitude_list3 <- c()
+X_list3 <- c()
+Y_list3 <- c()
+
+for (i in c(6001:9165)) {
+  addurl <- paste0("https://developers.onemap.sg/commonapi/search?searchVal=",
+                   unique_addresses[i],
+                   "&returnGeom=Y&getAddrDetails=N&pageNum=1")
+  
+  address_search <- URLencode(addurl)
+  search_result <- fromJSON(address_search)
+  
+  if (as.numeric(search_result$found) > 0) {
+    latitude <- as.numeric(search_result$results[1,]['LATITUDE'])
+    longitude <- as.numeric(search_result$results[1,]['LONGITUDE'])
+    X <- as.numeric(search_result$results[1,]['X'])
+    Y <- as.numeric(search_result$results[1,]['Y'])
+  } else {
+    latitude <- 0
+    longitude <- 0
+    X <- 0
+    Y <- 0
+  }
+  
+  latitude_list3 <- append(latitude_list3, latitude)
+  longitude_list3 <- append(longitude_list3, longitude)
+  X_list3 <- append(X_list3, X)
+  Y_list3 <- append(Y_list3, Y)
+  
+}
+```
+
+```{r}
+latitude_list_full <- append(latitude_list, latitude_list2)
+latitude_list_full <- append(latitude_list_full, latitude_list3)
+
+longitude_list_full <- append(longitude_list, longitude_list2)
+longitude_list_full <- append(longitude_list_full, longitude_list3)
+
+X_list_full <- append(X_list, X_list2)
+X_list_full <- append(X_list_full, X_list3
+                 )
+Y_list_full <- append(Y_list, Y_list2)
+Y_list_full <- append(Y_list_full, Y_list3)
+```
+
+```{r}
+unique_addresses2 <- data.frame(unique_addresses,latitude_list_full, longitude_list_full, X_list_full, Y_list_full)
+
+HDB_data_with_Location <- merge(HDB_data, unique_addresses2, by.x = "full_address", by.y = "unique_addresses")
+```
+
+```{r}
+write_csv(unique_addresses2, path = "Unique HDB Address.csv")
+
+write_csv(HDB_data_with_Location, path = "HDB Resale data with Location.csv")
+```
+
+## Get MRT Location Data
+```{r}
+MRT <- read_csv("MRT list.csv")
+```
+
+```{r}
+latitude_list <- c()
+longitude_list <- c()
+X_list <- c()
+Y_list <- c()
+
+for (i in c(1:119)) {
+  addurl <- paste0("https://developers.onemap.sg/commonapi/search?searchVal=",
+                   MRT$Address[i],
+                   "&returnGeom=Y&getAddrDetails=N&pageNum=1")
+  
+  address_search <- URLencode(addurl)
+  search_result <- fromJSON(address_search)
+  
+  if (as.numeric(search_result$found) > 0) {
+    latitude <- as.numeric(search_result$results[1,]['LATITUDE'])
+    longitude <- as.numeric(search_result$results[1,]['LONGITUDE'])
+    X <- as.numeric(search_result$results[1,]['X'])
+    Y <- as.numeric(search_result$results[1,]['Y'])
+  } else {
+    latitude <- 0
+    longitude <- 0
+    X <- 0
+    Y <- 0
+  }
+  
+  latitude_list <- append(latitude_list, latitude)
+  longitude_list <- append(longitude_list, longitude)
+  X_list <- append(X_list, X)
+  Y_list <- append(Y_list, Y)
+  
+}
+```
+
+```{r}
+MRT_with_locations <- data.frame(MRT$MRT_station, MRT$Address, latitude_list, longitude_list, X_list, Y_list)
+write_csv(MRT_with_locations, path = "MRT with Location.csv")
+```
+
+## Identify Closest MRT for each Resale and Calculate Distance
+```{r}
+closest_MRT <- c()
+closest_distance <- c()
+
+for (i in c(1:9165)) {
+  distance <- 999999999999999999999999999
+  
+  for (j in c(1:119)) {
+    
+    euclidean <- sqrt((unique_addresses2$X_list[i]-MRT_with_locations$X_list[j])^2 + 
+                        (unique_addresses2$Y_list[i]-MRT_with_locations$Y_list[j])^2)
+    
+    if (euclidean < distance) {
+      
+      distance <- euclidean
+      closest <- MRT_with_locations$MRT.MRT_station[j]
+      
+    }
+    
+  }
+  
+  closest_MRT <- append(closest_MRT, closest)
+  closest_distance <- append(closest_distance, distance)
+  
+}
+```
+
+```{r}
+unique_addresses_with_MRT <- data.frame(unique_addresses2, closest_MRT, closest_distance)
+unique_addresses_with_MRT$latitude_list_full <- NULL
+unique_addresses_with_MRT$longitude_list_full <- NULL
+unique_addresses_with_MRT$X_list_full <- NULL
+unique_addresses_with_MRT$Y_list_full <- NULL
+
+HDB_data_final <- merge(HDB_data_with_Location, unique_addresses_with_MRT, by.x = "full_address", by.y = "unique_addresses")
+```
+
+## Calculate Distance of each REsale to CBD
+```{r}
+RP <- "Raffles Place"
+CBD_RP <- subset(MRT_with_locations, MRT.MRT_station %in% RP)
+
+HDB_data_final$CBD_dist <- sqrt((HDB_data_final$X_list_full - CBD_RP$X_list)^2 + (HDB_data_final$Y_list_full - CBD_RP$Y_list)^2)
+```
+
+```{r}
+write_csv(HDB_data_final, path = "HDB Resale data final.csv")
+```
+
+## Calculate Mean Price amd Mean Price per SQM
+```{r}
+HDB_data_final$floor_area_sqm <- as.numeric(as.character(HDB_data_final$floor_area_sqm))
+HDB_data_final$resale_price <- as.numeric(as.character(HDB_data_final$resale_price))
+HDB_data_final$price_per_sqm <- HDB_data_final$resale_price/HDB_data_final$floor_area_sqm
+
+year_month <- setNames(data.frame(HDB_data_final$month,
+                                  do.call(rbind, strsplit(as.character(HDB_data_final$month),
+                                                          split="-"))),
+                       c("attr", "year", "month"))
+year_month$attr <- NULL
+year_month$month <- NULL
+```
+
+#calculate mean price
+```{r}
+HDB_with_year <- data.frame(HDB_data_final, year_month)
+HDB_with_year$year <- as.numeric(as.character(HDB_with_year$year))
+
+year_and_price <- data.frame(HDB_with_year$resale_price, HDB_with_year$year)
+mean_yearly_price <- aggregate(.~HDB_with_year.year, data = year_and_price, mean)
+
+write_csv(mean_yearly_price, path = "Mean Price HDB.csv")
+```
+
+#calculate mean price per sqm
+```{r}
+year_and_price_sqm <- data.frame(HDB_with_year$price_per_sqm, HDB_with_year$year)
+mean_yearly_price_sqm <- aggregate(.~HDB_with_year.year, data = year_and_price_sqm, mean)
+
+write_csv(mean_yearly_price_sqm, path = "Mean Price per sqm HDB.csv")
+```
+
+
+## Multiple Linear Regression Calculation
+```{r}
+fit <- lm(resale_price ~ flat_type + flat_model + floor_area_sqm + storey_range + closest_distance + CBD_dist + lease_commence_date,
+          data = HDB_data_final)
+
+summary(fit)
+```
+
+```{r}
+fit2 <- lm(resale_price ~ flat_type + flat_model + floor_area_sqm + storey_range + CBD_dist,
+           data = HDB_data_final)
+
+summary(fit2)
+```
+
+##Stepwise model selection
+```{r}
+fit3 <- lm(resale_price ~ flat_type + flat_model + floor_area_sqm + storey_range + closest_distance + CBD_dist + lease_commence_date,
+           data = HDB_data_final)
+step <- stepAIC(fit3, direction = "both")
+step$anova
+```
+
