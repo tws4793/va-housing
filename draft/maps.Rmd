@@ -12,8 +12,9 @@ head(resale_loglat_4room_2019)
 ```
 
 
+
 ```{r}
-packages = c('ggplot2','readr','sf','tmap','dplyr', 'tidyr','stringr','leaflet')
+packages = c('ggplot2','readr','sf','tmap','dplyr', 'tidyr','stringr','leaflet','leaflet.extras')
 for (p in packages){
   if(!require(p, character.only = T)){
     install.packages(p)
@@ -56,12 +57,13 @@ leaflet() %>%   addTiles(group = "OpenStreetMap") %>%
                                  "Median Lease Start Date: ", resale_loglat_4room_2019$`Median Lease Start Date`, "<br>",
                                  "Closest Mrt: ", resale_loglat_4room_2019$closest_MRT, "<br>",
                                  "Distance from Mrt (m): ", format(round(resale_loglat_4room_2019$closest_distance,digits=2),nsmall=2,big.mark=","), "<br>",
-                                 "Distance from CBD (m): ", format(round(resale_loglat_4room_2019$CBD_dist,digits=2),nsmall=2,big.mark=","))) %>%
+                                 "Distance from CBD (m): ", format(round(resale_loglat_4room_2019$CBD_dist,digits=2),nsmall=2,big.mark=",")),
+                                  group = "circles") %>%
    addMarkers(data=mrt,
               lng=~longitude_list, 
               lat=~latitude_list, 
               icon = mrt_icon,
-              label = mrt$`MRT.MRT_station`) %>%
+              label = mrt$`MRT.MRT_station`,group = 'markers') %>%
    addLayersControl(baseGroups = c("CartoDB.Positron","OpenStreetMap","Esri.WorldTopoMap"), 
                     options = layersControlOptions(collapsed = TRUE)) %>%
    addLegend(data=resale_loglat_4room_2019,
@@ -69,7 +71,16 @@ leaflet() %>%   addTiles(group = "OpenStreetMap") %>%
              values = ~`Median Price`,
              position = "bottomright",
              title ="Median Price (S$)"
+  )%>%
+  addSearchFeatures(
+    targetGroups = 'markers', # group should match addMarkers() group
+    options = searchFeaturesOptions(
+      zoom=14, openPopup = TRUE, firstTipSubmit = TRUE,
+      autoCollapse = TRUE, hideMarkerOnCollapse = TRUE
+    )
   )
 ```
+
+
 
 

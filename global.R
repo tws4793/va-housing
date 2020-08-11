@@ -12,6 +12,7 @@ packages = c(
     'DT',
     'here',
     'leaflet',
+    'leaflet.extras',
     'lubridate',
     'MASS',
     'shiny',
@@ -31,6 +32,7 @@ for(p in packages){
 library(bs4Dash)
 library(here)
 library(leaflet)
+library(leaflet.extras)
 library(lubridate)
 library(MASS)
 library(shiny)

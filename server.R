@@ -247,14 +247,16 @@ server = function(input, output){
         radius = 1,
         color = ~pal(sb_hdb_resale$`Median Price`),
         opacity= 0.5,
-        popup = popup
+        popup = popup,
+        group = 'circles'
       ) %>%
       addMarkers( # Add MRT Stations
         data = data_mrt,
         lng = ~longitude_list,
         lat = ~latitude_list,
         icon = icon_mrt,
-        label = data_mrt$`MRT.MRT_station`
+        label = data_mrt$`MRT.MRT_station`,
+        group = 'markers'
       ) %>%
       addLegend(
         data = sb_hdb_resale,
@@ -262,9 +264,20 @@ server = function(input, output){
         values = ~`Median Price`,
         position = 'bottomright',
         title = 'Median Price (S$)'
+      ) %>%
+      addSearchFeatures(
+        targetGroups = 'markers', # group should match addMarkers() group
+        options = searchFeaturesOptions(
+          zoom = 14,
+          openPopup = TRUE,
+          firstTipSubmit = TRUE,
+          autoCollapse = TRUE,
+          hideMarkerOnCollapse = TRUE
+      )
       )
   })
   
+  # DataTable
   output$dt_hdb_resale = DT::renderDataTable(
     datatable(
       sb_hdb_resale_filter() %>%
