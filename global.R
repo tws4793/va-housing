@@ -13,6 +13,7 @@ packages = c(
     'here',
     'leaflet',
     'lubridate',
+    'MASS',
     'shiny',
     'tidyverse',
     'plotly'
@@ -31,6 +32,7 @@ library(bs4Dash)
 library(here)
 library(leaflet)
 library(lubridate)
+library(MASS)
 library(shiny)
 library(tidyverse)
 library(plotly)
@@ -70,3 +72,10 @@ sb_hdb_resale = data_hdb_resale %>%
     year = substr(year_month, start = 1, stop = 4),
     flat_type = fct_relevel(flat_type, hdb_flat_types_order)
   )
+
+fit = lm(
+  resale_price ~ flat_type + floor_area_sqm + storey_range + CBD_dist,
+  data = sb_hdb_resale
+)
+# names(fit$coefficients)
+# step = stepAIC(fit, direction = "both")

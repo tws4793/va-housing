@@ -27,6 +27,32 @@ settings_map = fluidRow(
   )
 )
 
+comp_regr = fluidRow(
+  column(
+    3,
+    uiOutput('dd_regr_flat_type')
+  ),
+  column(
+    3,
+    uiOutput('nb_regr_floor_area')
+  ),
+  column(
+    3,
+    uiOutput('dd_regr_storey_range')
+  ),
+  column(
+    3,
+    uiOutput('nb_regr_dist_cbd')
+  )
+)
+
+comp_regr_final = fluidRow(
+  column(
+    12,
+    uiOutput('txt_regr_final')
+  )
+)
+
 ### PAGES
 
 # Index
@@ -134,7 +160,7 @@ pg_about = tabItem(
 
 # Regression
 tb_regression = menuItem(
-  'Regression',
+  'Estimate',
   tabName = 'regression',
   icon = 'chart-line'
 )
@@ -142,31 +168,18 @@ pg_regression = tabItem(
   tabName = 'regression',
   fluidRow(
     box(
-      fluidRow(
-        column(
-          12,
-          'Settings'
-        )
-      ),
+      comp_regr,
       hr(),
-      fluidRow(
-        column(
-          12,
-          span(
-            strong('87.5'),
-            style = 'font-size: 200px',
-            align = 'center'
-          )
-        )
-      ),
-      title = 'Prediction',
+      comp_regr_final,
+      title = 'Estimate Resale Price',
       collapsible = FALSE,
       collapsed = FALSE,
       closable = FALSE,
       maximizable = TRUE,
-      overflow = TRUE,
+      overflow = FALSE,
       width = 12,
-      status = 'secondary'
+      # height = '500px',
+      status = getAdminLTEColors()[8]
     )
   )
 )
@@ -199,7 +212,7 @@ user = sidebarUserPanel(
 sidebar = dashboardSidebar(
   sidebarMenu(
     tb_index,
-    # tb_regression,
+    tb_regression,
     tb_guide,
     tb_about
   ),

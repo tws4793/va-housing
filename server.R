@@ -283,4 +283,101 @@ server = function(input, output){
       rownames = FALSE
     )
   )
+  
+  # Regression
+  output$dd_regr_flat_type = renderUI({
+    selectInput(
+      inputId = 'in_regr_flat_type',
+      label = 'Flat Type',
+      choices = hdb_flat_types_order,
+      width = '100%'
+    )
+  })
+  
+  output$dd_regr_storey_range = renderUI({
+    choices = sb_hdb_resale %>%
+      distinct(storey_range) %>%
+      arrange(storey_range)
+    
+    selectInput(
+      inputId = 'in_regr_storey_range',
+      label = 'Storey Range',
+      choices = choices,
+      width = '100%'
+    )
+  })
+  
+  output$nb_regr_floor_area = renderUI({
+    min = min(sb_hdb_resale$floor_area_sqm)
+    max = max(sb_hdb_resale$floor_area_sqm)
+    med = median(sb_hdb_resale$floor_area_sqm)
+    
+    numericInput(
+      inputId = 'in_regr_floor_area',
+      label = 'Floor Area (sqm)',
+      value = med,
+      min = min,
+      max = max,
+      width = '100%'
+    )
+  })
+  
+  output$nb_regr_dist_cbd = renderUI({
+    numericInput(
+      inputId = 'in_regr_dist_cbd',
+      label = 'Distance to CBD (m)',
+      value = 0,
+      width = '100%'
+    )
+  })
+  
+  regr_estimate_value = reactive({
+    fit$coefficients[1] +
+      # Flat Type
+      fit$coefficients[2] * (input$in_regr_flat_type == '2 ROOM') +
+      fit$coefficients[3] * (input$in_regr_flat_type == '3 ROOM') +
+      fit$coefficients[4] * (input$in_regr_flat_type == '4 ROOM') +
+      fit$coefficients[5] * (input$in_regr_flat_type == '5 ROOM') +
+      fit$coefficients[6] * (input$in_regr_flat_type == 'EXECUTIVE') +
+      fit$coefficients[7] * (input$in_regr_flat_type == 'MULTI-GENERATION') +
+      # Floor Area
+      fit$coefficients[8] * input$in_regr_floor_area +
+      # Storey Range
+      fit$coefficients[9] * (input$in_regr_storey_range == '01 TO 05') +
+      fit$coefficients[10] * (input$in_regr_storey_range == '04 TO 06') +
+      fit$coefficients[11] * (input$in_regr_storey_range == '06 TO 10') +
+      fit$coefficients[12] * (input$in_regr_storey_range == '07 TO 09') +
+      fit$coefficients[13] * (input$in_regr_storey_range == '10 TO 12') +
+      fit$coefficients[14] * (input$in_regr_storey_range == '11 TO 15') +
+      fit$coefficients[15] * (input$in_regr_storey_range == '13 TO 15') +
+      fit$coefficients[16] * (input$in_regr_storey_range == '16 TO 18') +
+      fit$coefficients[17] * (input$in_regr_storey_range == '16 TO 20') +
+      fit$coefficients[18] * (input$in_regr_storey_range == '19 TO 21') +
+      fit$coefficients[19] * (input$in_regr_storey_range == '21 TO 25') +
+      fit$coefficients[20] * (input$in_regr_storey_range == '22 TO 24') +
+      fit$coefficients[21] * (input$in_regr_storey_range == '25 TO 27') +
+      fit$coefficients[22] * (input$in_regr_storey_range == '26 TO 30') +
+      fit$coefficients[23] * (input$in_regr_storey_range == '28 TO 30') +
+      fit$coefficients[24] * (input$in_regr_storey_range == '31 TO 33') +
+      fit$coefficients[25] * (input$in_regr_storey_range == '31 TO 35') +
+      fit$coefficients[26] * (input$in_regr_storey_range == '34 TO 36') +
+      fit$coefficients[27] * (input$in_regr_storey_range == '36 TO 40') +
+      fit$coefficients[28] * (input$in_regr_storey_range == '37 TO 39') +
+      fit$coefficients[29] * (input$in_regr_storey_range == '40 TO 42') +
+      fit$coefficients[30] * (input$in_regr_storey_range == '43 TO 45') +
+      fit$coefficients[31] * (input$in_regr_storey_range == '46 TO 48') +
+      fit$coefficients[32] * (input$in_regr_storey_range == '49 TO 51') +
+      # Distance to CBD
+      fit$coefficients[33] * input$in_regr_dist_cbd
+  })
+  
+  output$txt_regr_final = renderUI({
+    text = paste0('S$', fmt_large(regr_estimate_value()))
+    
+    p(
+      strong(text),
+      style = 'font-size: 4rem',
+      align = 'center',
+    )
+  })
 }
