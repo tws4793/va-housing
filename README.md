@@ -2,6 +2,8 @@
 
 Housing prices
 
+The visualisation is also available at: https://teoweishen.shinyapps.io/housing/.
+
 ## Setup
 
 ### Using `runGitHub` Command
