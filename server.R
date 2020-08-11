@@ -18,61 +18,52 @@ server = function(input, output){
   })
   
   fmt_large = function(number, dp = 2){
-    format(round(number, dp), nsmall = 1, big.mark = ',')
+    format(round(number, dp), nsmall = 2, big.mark = ',')
   }
   
   fmt_percent = function(number){
     paste0(round(number, 2), '%')
   }
   
-  output$vbox_hp = renderbs4ValueBox({
+  fmt_valuebox = function(figure, subtitle, icon, status = getAdminLTEColors()[8], width = 3){
     valueBox(
-      value = span(
+      value = span(figure, style = 'font-size: 2.2rem'),
+      subtitle = paste0(subtitle, ' (', input$slide_year_gdp, ')'),
+      status = status,
+      icon = icon,
+      width = width
+    )
+  }
+  
+  output$vbox_hp = renderbs4ValueBox({
+    fmt_valuebox(
         paste0('S$ ', fmt_large(sb_key_figures()$HDB_Resale_Price)),
-        style = 'font-size: 2.2rem'
-      ),
-      subtitle = paste0('Average HDB Resale Price (', input$slide_year_gdp, ')'),
-      status = getAdminLTEColors()[8],
-      icon = 'home'
+      'Average HDB Resale Price',
+      'home'
     )
   })
   
   output$vbox_gdp_gr = renderbs4ValueBox({
-    valueBox(
-      value = span(
+    fmt_valuebox(
         fmt_percent(sb_key_figures()$GDP_Growth),
-        style = 'font-size: 2.2rem'
-      ),
-      subtitle = paste0('GDP Growth (', input$slide_year_gdp, ')'),
-      status = getAdminLTEColors()[8],
-      icon = 'globe-asia',
-      width = 3
+      'GDP Growth',
+      'globe-asia'
     )
   })
   
   output$vbox_gdp_pc = renderbs4ValueBox({
-    valueBox(
-      value = span(
-        paste0('S$ ', fmt_large(sb_key_figures()$GDP_per_capita)),
-        style = 'font-size: 2.2rem'
-      ),
-      subtitle = paste0('GDP per Capita (', input$slide_year_gdp, ')'),
-      status = getAdminLTEColors()[8],
-      icon = 'user-friends',
-      width = 3
+    fmt_valuebox(
+      paste0('US$ ', fmt_large(sb_key_figures()$GDP_per_capita)),
+      'GDP per Capita',
+      'user-friends'
     )
   })
   
   output$vbox_inf = renderbs4ValueBox({
-    valueBox(
-      value = span(
+    fmt_valuebox(
         fmt_percent(sb_key_figures()$Inflation),
-        style = 'font-size: 2.2rem'
-      ),
-      subtitle = paste0('Overall Inflation (', input$slide_year_gdp, ')'),
-      status = getAdminLTEColors()[8],
-      icon = 'chart-line',
-      width = 3
+      'Overall Inflation',
+      'chart-line'
     )
   })
   
