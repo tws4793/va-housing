@@ -61,8 +61,12 @@ hdb_flat_types_order = c(
 )
 
 sb_hdb_resale = data_hdb_resale %>%
+  rename(
+    year_month = month
+  ) %>%
   mutate(
-    year = substr(month, start = 1, stop = 4),
-    full_address = str_to_title(full_address),
+    year_month_fmt = format(parse_date_time(year_month, orders = c('Y-m')), '%b %Y'),
+    month = substr(year_month, start = 6, stop = 7),
+    year = substr(year_month, start = 1, stop = 4),
     flat_type = fct_relevel(flat_type, hdb_flat_types_order)
   )

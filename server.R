@@ -188,6 +188,9 @@ server = function(input, output){
         latitude_list_full != 0,
         year == input$slide_year,
         flat_type %in% input_flat_type
+      ) %>%
+      arrange(
+        year_month
       )
   })
   
@@ -279,19 +282,16 @@ server = function(input, output){
     datatable(
       sb_hdb_resale_filter() %>%
         select(
-          'Month' = month,
+          'Month' = year_month_fmt,
           'Town' = town,
           'Address' = full_address,
           'Storey Range' = storey_range,
           'Area (sqm)' = floor_area_sqm,
-          'Resale Price' = resale_price,
+          'Resale Price (S$)' = resale_price,
         ),
       options = list(
         pageLength = 5,
-        lengthMenu = c(5, 10, 25, 50, 100),
-        order = list(
-          list(0, 'asc')
-        )
+        lengthMenu = c(5, 10, 25, 50, 100)
       ),
       rownames = FALSE
     )
