@@ -50,8 +50,19 @@ data_mrt = read_csv(dir_data$mrt)
 icon_mrt = makeIcon(iconUrl = dir_icon_mrt, iconWidth = 6, iconHeight = 6)
 
 ### Data Wrangling
+hdb_flat_types_order = c(
+  '1 ROOM',
+  '2 ROOM',
+  '3 ROOM',
+  '4 ROOM',
+  '5 ROOM',
+  'EXECUTIVE',
+  'MULTI-GENERATION'
+)
+
 sb_hdb_resale = data_hdb_resale %>%
   mutate(
     year = substr(month, start = 1, stop = 4),
-    full_address = str_to_title(full_address)
+    full_address = str_to_title(full_address),
+    flat_type = fct_relevel(flat_type, hdb_flat_types_order)
   )

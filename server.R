@@ -154,8 +154,7 @@ server = function(input, output){
   })
   
   output$sel_flat_type = renderUI({
-    choices = sb_hdb_resale %>%
-      distinct(flat_type)
+    choices = c('ALL', hdb_flat_types_order)
     
     selectInput(
       inputId = 'sel_flat_type',
@@ -179,11 +178,16 @@ server = function(input, output){
   })
   
   sb_hdb_resale_filter = reactive({
+    # https://stackoverflow.com/questions/38108515/r-shiny-display-full-dataframe-without-filter-input-until-filterinputs-are-chang
+    input_flat_type = 
+      if(input$sel_flat_type == 'ALL') hdb_flat_types_order
+      else input$sel_flat_type
+    
     sb_hdb_resale %>%
       filter(
         latitude_list_full != 0,
         year == input$slide_year,
-        flat_type == input$sel_flat_type
+        flat_type %in% input_flat_type
       )
   })
   
