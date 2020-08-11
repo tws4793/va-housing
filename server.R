@@ -5,6 +5,7 @@ server = function(input, output){
       inputId = 'slide_year_gdp',
       label = NULL,
       width = '100%',
+      ticks = FALSE,
       min = as.numeric(min(data_gdp$Year)),
       max = as.numeric(max(data_gdp$Year)),
       value = 2019
@@ -145,6 +146,7 @@ server = function(input, output){
     sliderInput(
       inputId = 'slide_year',
       label = 'Year',
+      ticks = FALSE,
       min = as.numeric(min(sb_hdb_resale$year)),
       max = as.numeric(max(sb_hdb_resale$year)),
       value = as.numeric(max(sb_hdb_resale$year))
@@ -154,7 +156,6 @@ server = function(input, output){
   output$sel_flat_type = renderUI({
     choices = sb_hdb_resale %>%
       distinct(flat_type)
-    append(choices, 'all')
     
     selectInput(
       inputId = 'sel_flat_type',
