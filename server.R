@@ -37,7 +37,7 @@ server = function(input, output){
   
   output$vbox_hp = renderbs4ValueBox({
     fmt_valuebox(
-        paste0('S$ ', fmt_large(sb_key_figures()$HDB_Resale_Price)),
+      paste0('S$ ', fmt_large(sb_key_figures()$HDB_Resale_Price)),
       'Average HDB Resale Price',
       'home'
     )
@@ -45,7 +45,7 @@ server = function(input, output){
   
   output$vbox_gdp_gr = renderbs4ValueBox({
     fmt_valuebox(
-        fmt_percent(sb_key_figures()$GDP_Growth),
+      fmt_percent(sb_key_figures()$GDP_Growth),
       'GDP Growth',
       'globe-asia'
     )
@@ -61,7 +61,7 @@ server = function(input, output){
   
   output$vbox_inf = renderbs4ValueBox({
     fmt_valuebox(
-        fmt_percent(sb_key_figures()$Inflation),
+      fmt_percent(sb_key_figures()$Inflation),
       'Overall Inflation',
       'chart-line'
     )
@@ -216,16 +216,12 @@ server = function(input, output){
       "Distance from CBD (m): ", format(round(sb_hdb_resale$CBD_dist,digits=2),nsmall=2,big.mark=",")
     )
     
-    # min = min(sb_hdb_resale$`Median Price`)
-    # max = max(sb_hdb_resale$`Median Price`)
-    # bins= 1:6 * 200000
     pal = colorBin(
-      palette = "Reds",
+      palette = 'Reds',
       domain = c(
         min(sb_hdb_resale$`Median Price`),
         max(sb_hdb_resale$`Median Price`)
-        # min, max
-      ), 
+      ),
       bins = 1:6 * 200000
     )
     
@@ -265,7 +261,7 @@ server = function(input, output){
         pal = pal,
         values = ~`Median Price`,
         position = 'bottomright',
-        title = "Median Price (S$)"
+        title = 'Median Price (S$)'
       )
   })
   
