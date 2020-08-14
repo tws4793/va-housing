@@ -12,6 +12,7 @@ data/
 *.tax2010
 *.vcf
 *.xml
+*.pdf
 
 ### Linux ###
 *~
