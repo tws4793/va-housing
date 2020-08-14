@@ -153,6 +153,13 @@ pg_about = tabItem(
   fluidRow(
     column(
       12,
+      h1('About'),
+      hr()
+    )
+  ),
+  fluidRow(
+    column(
+      12,
       includeMarkdown('notebook/about.Rmd')
     )
   )
@@ -192,6 +199,13 @@ tb_guide = menuItem(
 )
 pg_guide = tabItem(
   tabName = 'guide',
+  fluidRow(
+    column(
+      12,
+      h1('User Guide'),
+      hr()
+    )
+  ),
   fluidRow(
     column(
       12,

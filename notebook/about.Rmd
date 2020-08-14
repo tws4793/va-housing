@@ -1,11 +1,16 @@
 ---
 title: "About"
 pagetitle: About
-output: html_notebook
+output: 
+  html_notebook:
+    number_sections: true
 ---
 
-# About
-This is a dashboard visualising (to be updated). This visualisation is a main deliverable for the SMU **ISSS608 Visual Analytics and Applications** course. The project requires students to build a dashboard on a topic of choice following visualisation best practices that were taught in the course.
+You can find the live dashboard at https://teoweishen.shinyapps.io/housing/.
+
+# About this Visualisation
+
+This is a dashboard visualising HDB Resale Prices vis-a-vis Singapore Economy. This visualisation is a main deliverable for the SMU **ISSS608 Visual Analytics and Applications** course. The project requires students to build a dashboard on a topic of choice following visualisation best practices that were taught in the course.
 
 ## The Topic
 
@@ -23,11 +28,16 @@ We will also be performing a time series analysis to determine how the overall e
 
 HDB resale prices are a constant concern for Singaporeans, especially those who are getting married and planning to start a family of their own. Although the government provides significant subsidies, there is still the need to understand the factors that contribute to differences in prices for the resale market. 
 
-Additionally, analysing the trends in past crises could provide a means of understanding how HDB resale prices might be affected by the ongoing Covid-19 crisis, the largest pandemic since the Spanish flu in 1918. With cases on the rise again in major economies1, there is a real risk of further economic impact which may result in changes to housing prices.
+Additionally, analysing the trends in past crises could provide a means of understanding how HDB resale prices might be affected by the ongoing Covid-19 crisis, the largest pandemic since the Spanish flu in 1918. With cases on the rise again in major economies, there is a real risk of further economic impact which may result in changes to housing prices.
 
 ## Datasets
 
-To be updated
+Datasets used include:
+
+- [HDB Resale Flat Prices](https://data.gov.sg/dataset/resale-flat-prices) from [data.gov.sg](https://data.gov.sg)
+- [World Bank](https://data.worldbank.org/country/SG)
+
+The datasets were augmented with latitude and longitude information from [OneMap Search API](https://docs.onemap.sg/#search).
 
 # Setup
 
