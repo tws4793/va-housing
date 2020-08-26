@@ -1,3 +1,5 @@
+source('R/packages.R')
+
 ### Settings
 settings = list(
   'map' = list(
@@ -6,38 +8,6 @@ settings = list(
     'zoom' = 11
   )
 )
-
-packages = c(
-    'bs4Dash',
-    'DT',
-    'here',
-    'leaflet',
-    'leaflet.extras',
-    'lubridate',
-    'MASS',
-    'shiny',
-    'tidyverse',
-    'plotly'
-)
-
-### Deployment
-for(p in packages){
-  if(!require(p, character.only = T)){
-    install.packages(p)
-  }
-  library(p, character.only = T)
-}
-
-# Overcome limitation of shinyapps
-library(bs4Dash)
-library(here)
-library(leaflet)
-library(leaflet.extras)
-library(lubridate)
-library(MASS)
-library(shiny)
-library(tidyverse)
-library(plotly)
 
 ### Data
 dir_data = list(

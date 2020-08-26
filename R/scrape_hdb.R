@@ -1,10 +1,3 @@
-library(dplyr)
-library(here)
-library(readr)
-library(rjson)
-library(jsonlite)
-library(RCurl)
-
 output_location = here('data/raw/hdb_resale_data.csv')
 
 base_url = 'https://data.gov.sg/api/action/datastore_search'
